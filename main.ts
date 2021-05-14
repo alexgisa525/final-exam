@@ -1,3 +1,26 @@
+namespace SpriteKind {
+    export const pro2 = SpriteKind.create()
+}
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    projectile = sprites.createProjectileFromSprite(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . 2 2 3 3 3 3 2 . . . . 
+        . 2 2 2 3 3 1 1 1 1 1 3 2 . . . 
+        . 1 1 1 1 1 1 1 1 1 1 1 2 . . . 
+        . 2 2 2 3 3 1 1 1 1 1 3 2 . . . 
+        . . . . . 2 2 2 3 3 3 2 . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, mySprite, 50, 0)
+})
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile`, function (sprite, location) {
     scene.setBackgroundImage(img`
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
@@ -129,9 +152,18 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.collectibleBlueCrystal, function (sprite, location) {
     info.setLife(5)
 })
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Player, function (sprite, otherSprite) {
-	
+sprites.onOverlap(SpriteKind.pro2, SpriteKind.Player, function (sprite, otherSprite) {
+    mySprite.say("ow!", 1000)
+    otherSprite.destroy(effects.fire, 500)
+    info.changeLifeBy(-1)
 })
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+    mySprite.say("ALERT THE BOSS!", 1000)
+    otherSprite.destroy(effects.fire, 500)
+    info.setScore(10)
+})
+let projectile: Sprite = null
+let proj2: Sprite = null
 let mySprite: Sprite = null
 game.splash("HELP SAVE YOUR SISTER.... ", "USE A,B, AND THE ARROW KEYS")
 mySprite = sprites.create(img`
@@ -254,8 +286,9 @@ let mySprite2 = sprites.create(img`
     `, SpriteKind.Enemy)
 controller.moveSprite(mySprite, 100, 0)
 mySprite.ay = 200
+tiles.placeOnTile(mySprite, tiles.getTileLocation(3, 3))
 scene.cameraFollowSprite(mySprite)
-tiles.placeOnTile(mySprite2, tiles.getTileLocation(8, 6))
+tiles.placeOnTile(mySprite2, tiles.getTileLocation(7, 4))
 mySprite2.vx = 20
 mySprite2.setBounceOnWall(true)
 info.setLife(3)
@@ -383,3 +416,24 @@ scene.setBackgroundImage(img`
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     `)
 tiles.setTilemap(tilemap`level1`)
+proj2.setKind(SpriteKind.pro2)
+game.onUpdateInterval(500, function () {
+    proj2 = sprites.createProjectileFromSprite(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . 4 . . . . . 
+        . . . . 2 . . . . 4 4 . . . . . 
+        . . . . 2 4 . . 4 5 4 . . . . . 
+        . . . . . 2 4 d 5 5 4 . . . . . 
+        . . . . . 2 5 5 5 5 4 . . . . . 
+        . . . . . . 2 5 5 5 5 4 . . . . 
+        . . . . . . 2 5 4 2 4 4 . . . . 
+        . . . . . . 4 4 . . 2 4 4 . . . 
+        . . . . . 4 4 . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, mySprite2, -50, 0)
+})
